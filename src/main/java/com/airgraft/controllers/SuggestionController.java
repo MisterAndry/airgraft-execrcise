@@ -1,15 +1,16 @@
 package com.airgraft.controllers;
 
-import com.airgraft.models.Suggestion;
-import com.airgraft.SuggestionsService;
+import com.airgraft.dto.Suggestion;
+import com.airgraft.dto.SuggestionsResponse;
+import com.airgraft.service.SuggestionsService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class SuggestionController {
 
     private final SuggestionsService suggestionsService;
@@ -19,13 +20,13 @@ public class SuggestionController {
     }
 
     @GetMapping(value = "/suggestions")
-    public ResponseEntity<List<Suggestion>> suggestion(@RequestParam(value = "cityName") String cityName,
-                                                       @RequestParam(value = "latitude", required = false) Double latitude,
-                                                       @RequestParam(value = "longitude", required = false) Double longitude) {
+    public ResponseEntity<SuggestionsResponse> suggestion(@RequestParam(value = "cityName") String cityName,
+                                                          @RequestParam(value = "latitude", required = false) Double latitude,
+                                                          @RequestParam(value = "longitude", required = false) Double longitude) {
 
-        System.out.println("cityName = " + cityName + ", latitude = " + latitude + ", longitude = " + longitude);
-        List<Suggestion> suggestions = suggestionsService.getSuggestions(cityName, latitude, longitude);
+        List<Suggestion> cities = suggestionsService.getSuggestions(cityName, latitude, longitude);
+        SuggestionsResponse suggestionsResponse = new SuggestionsResponse(cities);
 
-        return ResponseEntity.ok(suggestions);
+        return ResponseEntity.ok(suggestionsResponse);
     }
 }
